@@ -51,7 +51,7 @@ def create_dir(path: str):
     if not os.path.exists(path):
         try:
             os.mkdir(path, mode=0o775)
-        except OSError as e:
+        except OSError as e:  # pragma: no cover
             print(e)
     return os.path.abspath(path)
 
