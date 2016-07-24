@@ -4,6 +4,8 @@ import shutil
 import sys
 import unittest
 
+from multiprocessing import Process
+
 from coalahtml import Constants
 from coalahtml.helper import get_file
 from coalahtml import coala_html
@@ -27,22 +29,28 @@ class coalaHTMLTest(unittest.TestCase):
         update_file = ""
         noupdate_file = ""
         with prepare_file(["#todo this is todo"], None) as (lines, filename):
-            execute_coala(coala_html.main,
-                          "coala-html",
-                          "-c", os.devnull,
-                          "-b", "LineCountBear",
-                          "-f", re.escape(filename),
-                          "--nolaunch")
+            p_update = Process(target=execute_coala, args=(coala_html.main,
+                                                           "coala-html",
+                                                           "-c", os.devnull,
+                                                           "-b", "LineCountBear",
+                                                           "-f", re.escape(filename),
+                                                           "--nolaunch"))
+            p_update.start()
+            p_update.join(10)
+
             with open(self.result_file, 'r') as fp:
                 update_file = fp.read()
-
-            execute_coala(coala_html.main,
-                          "coala-html",
-                          "-c", os.devnull,
-                          "-b", "LineCountBear",
-                          "-f", re.escape(filename),
-                          "--noupdate",
-                          "--nolaunch")
+            p_noupdate = Process(target=execute_coala, args=(coala_html.main,
+                                                             "coala-html",
+                                                             "-c", os.devnull,
+                                                             "-b", "LineCountBear",
+                                                             "-f",
+                                                             re.escape(
+                                                                 filename),
+                                                             "--noupdate",
+                                                             "--nolaunch"))
+            p_noupdate.start()
+            p_noupdate.join(10)
 
             with open(self.result_file, 'r') as fp:
                 noupdate_file = fp.read()

@@ -35,7 +35,7 @@ def main():
 
     dir_path = create_dir(os.path.abspath(args.dir))
 
-    if len(list(os.walk(dir_path))) > 0:
+    if len(list(os.walk(dir_path))) > 0:  # pragma: no cover
         copy_files(get_file(Constants.COALA_HTML_BASE), dir_path)
 
     if not args.noupdate:
@@ -71,7 +71,7 @@ def main():
                       sort_keys=True,
                       indent=2,
                       separators=(',', ': '))
-    if not args.nolaunch:
+    if not args.nolaunch:  # pragma: nocover
         # Launch server with reference point dir_path
         os.chdir(dir_path)
         if not os.path.exists('bower_components'):
